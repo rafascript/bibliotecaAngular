@@ -6,6 +6,7 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { MdbModalModule, MdbModalRef, MdbModalService } from 'mdb-angular-ui-kit/modal';
 import { LivrosdetailsComponent } from '../livrosdetails/livrosdetails.component';
 import Swal from 'sweetalert2';
+import { LivrosService } from '../../../services/livros.service';
 
 @Component({
   selector: 'app-livroslist',
@@ -22,26 +23,22 @@ export class LivroslistComponent {
 
   lista: Livro[] = [];
   livroEdit!: Livro;
-
+  livrosService = inject(LivrosService);
   constructor() {
     this.findall();
   }
   findall() {
-    let livro1 = new Livro();
-    livro1.id = 1;
-    livro1.titulo = 'Livro Um';
+    
+    this.livrosService.findAll().subscribe({
 
-    let livro2 = new Livro();
-    livro2.id = 2;
-    livro2.titulo = 'Livro Dois';
-
-    let livro3 = new Livro();
-    livro3.id = 3;
-    livro3.titulo = 'Livro Três';
-
-    this.lista.push(livro1);
-    this.lista.push(livro2);
-    this.lista.push(livro3);
+      next: lista => {//quando funciona
+        this.lista = lista;
+      },
+      error: erro => {//quando não funciona
+        console.error(erro);
+      }
+    });
+    
   }
 
   teste() {
@@ -99,7 +96,7 @@ export class LivroslistComponent {
   }
 
   new(){
-    this.livroEdit = new Livro();
+    this.livroEdit = new Livro(0, "");
     this.modalRef = this.modalService.open(this.modalDetalhe);
   }
 }
